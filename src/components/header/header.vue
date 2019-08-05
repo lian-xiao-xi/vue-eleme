@@ -1,10 +1,10 @@
 <template>
-  <div class="header" ref="headerBox">
+  <div class="header">
     <div class="content-wrap">
-      <div v-if="sellerData.avatar" class="avatar">
-        <img :src="sellerData.avatar" alt="商家头像" width="64" height="auto">
+      <div class="avatar">
+        <img :src="sellerData.avatar" alt="商家头像" width="64" height="64">
       </div>
-      <div v-if="sellerData.name" class="right-content">
+      <div class="right-content">
         <h1 class="title">
           <span class="brand"></span>
           <span class="name">{{sellerData.name}}</span>
@@ -25,7 +25,7 @@
       <span class="bulletin-text">{{sellerData.bulletin}}</span>
       <i class="icon-keyboard_arrow_right"></i>
     </div>
-    <div class="header-bg"></div>
+    <div class="header-bg" :style="{backgroundImage: `url(${this.sellerData.avatar})`}"></div>
     <transition name="fade">
       <div class="detail" v-show="detailShow">
         <div class="detail-wrap clearfix">
@@ -34,9 +34,9 @@
             <v-star :score="sellerData.score" :size="48"></v-star>
           </div>
           <section class="content-title">
-            <hr class="line"></hr>
+            <hr class="line">
             <div class="text">优惠信息</div>
-            <hr class="line"></hr>
+            <hr class="line">
           </section>
           <ul class="info-list" v-if="sellerData.supports">
             <li class="info-item" v-for="(item, index) in sellerData.supports" :key="index">
@@ -45,9 +45,9 @@
             </li>
           </ul>
           <section class="content-title">
-            <hr class="line"></hr>
+            <hr class="line">
             <div class="text">商家公告</div>
-            <hr class="line"></hr>
+            <hr class="line">
           </section>
           <p class="bulletin-text">{{sellerData.bulletin}}</p>
   
@@ -65,9 +65,17 @@ import comStar from '../star/star.vue';
 
 export default {
   name: 'comHeader',
+  _myOpt: {
+    imgSrc: {
+      _2x: require('./img/brand@2x.png'),
+      _3x: require('./img/bulletin@3x.png'),
+    }
+  },
   data() {
+    const classMap = ['decrease', 'discount', 'special', 'invoice', 'guarantee'];
     return {
-      classMap: ['decrease', 'discount', 'special', 'invoice', 'guarantee'],
+      // 一个类型对应一个样式, 所以对数组去重一下更加严谨
+      classMap: [...new Set(classMap)], 
       detailShow: false
     }
   },
@@ -78,18 +86,13 @@ export default {
   },
   props: {
     sellerData: {
-      type: Object
+      type: Object,
+      required: true
     }
   },
   components: {
     'v-star': comStar
   },
-  beforeUpdate() {
-    // console.log(sellerData.score);
-    document.querySelector('.header .header-bg').style.backgroundImage = `url(${this.sellerData.avatar})`;
-  },
-  created() {
-  }
 }
 </script>
 
@@ -285,7 +288,7 @@ export default {
         justify-content space-between
         align-items center
         .line
-          flex 1 1 2.24rem
+          flex 1
           border 1px solid rgba(255,255,255, .2)
         .text
           flex 0 0 auto
